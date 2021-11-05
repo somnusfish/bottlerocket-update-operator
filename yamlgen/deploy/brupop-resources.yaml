@@ -45,6 +45,13 @@ rules:
       - list
       - patch
       - update
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - get
+      - list
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -55,6 +62,20 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: brupop-apiserver-role
+subjects:
+  - kind: ServiceAccount
+    name: brupop-apiserver-service-account
+    namespace: brupop-bottlerocket-aws
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: brupop-apiserver-auth-delegator-role-binding
+  namespace: brupop-bottlerocket-aws
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: "system:auth-delegator"
 subjects:
   - kind: ServiceAccount
     name: brupop-apiserver-service-account
@@ -250,7 +271,7 @@ spec:
               name: bottlerocket-api-socket
             - mountPath: /bin/apiclient
               name: bottlerocket-apiclient
-            - mountPath: /var/run/secrets/tokens
+            - mountPath: /var/run/secrets/tokens/
               name: bottlerocket-agent-service-account-token
       imagePullSecrets:
         - name: brupop
@@ -268,6 +289,7 @@ spec:
           projected:
             sources:
               - serviceAccountToken:
+                  audience: brupop-apiserver
                   path: bottlerocket-agent-service-account-token
 ---
 apiVersion: v1
