@@ -35,6 +35,7 @@ pub const APISERVER_INTERNAL_PORT: i32 = 8080; // The internal port on which the
 pub const APISERVER_SERVICE_PORT: i32 = 80; // The k8s service port hosting the apiserver.
 pub const APISERVER_MAX_UNAVAILABLE: &str = "33%"; // The maximum number of unavailable nodes for the apiserver deployment.
 pub const APISERVER_HEALTH_CHECK_ROUTE: &str = "/ping"; // Route used for apiserver k8s liveness and readiness checks.
+pub const APISERVER_CRD_CONVERT_ENDPOINT: &str = "/crdconvert"; // Custom Resource convert endpoint.
 pub const APISERVER_SERVICE_NAME: &str = "brupop-apiserver"; // The name for the `svc` fronting the apiserver.
 
 // agent constants

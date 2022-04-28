@@ -10,6 +10,7 @@ use serde_json::json;
 use snafu::ResultExt;
 
 use std::convert::TryFrom;
+use tracing::{event, instrument, Level};
 
 /// HTTP endpoint which creates BottlerocketShadow custom resources on behalf of the caller.
 pub(crate) async fn create_bottlerocket_shadow_resource<T: BottlerocketShadowClient>(
@@ -40,6 +41,13 @@ pub(crate) async fn update_bottlerocket_shadow_resource<T: BottlerocketShadowCli
         .context(error::BottlerocketShadowUpdate)?;
 
     Ok(HttpResponse::Ok().body(format!("{}", json!(&node_status))))
+}
+
+pub(crate) async fn convert_bottlerocket_shadow_resource(
+    http_req: HttpRequest,
+) -> Result<impl Responder> {
+    event!(Level::INFO, ?http_req, "Check the crd request.");
+    Ok(HttpResponse::Ok())
 }
 
 #[cfg(test)]
